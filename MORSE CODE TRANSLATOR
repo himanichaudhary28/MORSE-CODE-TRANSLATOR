@@ -1,0 +1,135 @@
+from tkinter import *
+from tkinter import messagebox
+
+main = Tk()
+
+variable1 = StringVar(main)
+variable2 = StringVar(main)
+
+variable1.set("-select-")
+variable2.set("-select-")
+
+MORSE_CODE_DICT ={
+                  'A':'.-', 'B':'-...',
+		  'C':'-.-.', 'D':'-..', 'E':'.',
+		  'F':'..-.', 'G':'--.', 'H':'....',
+		  'I':'..', 'J':'.---', 'K':'-.-',
+		  'L':'.-..', 'M':'--', 'N':'-.',
+		  'O':'---', 'P':'.--.', 'Q':'--.-',
+		  'R':'.-.', 'S':'...', 'T':'-',
+		  'U':'..-', 'V':'...-', 'W':'.--',
+		  'X':'-..-', 'Y':'-.--', 'Z':'--..',
+		  '1':'.----', '2':'..---', '3':'...--',
+		  '4':'....-', '5':'.....', '6':'-....',
+	          '7':'--...', '8':'---..', '9':'----.',
+		  '0':'-----', ', ':'--..--', '.':'.-.-.-',
+		  '?':'..--..', '/':'-..-.', '-':'-....-',
+		  '(':'-.--.', ')':'-.--.-'
+                  }
+
+def clearAll() :
+	language1_field.delete(1.0, END)
+	language2_field.delete(1.0, END)
+
+def convert() :
+	message = language1_field.get("1.0", "end")[:-1]
+
+	if variable1.get() == variable2.get() :
+		messagebox.showerror("Error!")
+		return
+
+	elif variable1.get() == "Message" and variable2.get() == "Morse Code" :
+		rslt = encrypt(message)
+
+	elif variable1.get() == "Morse Code" and variable2.get() == "Message" :
+		rslt = decrypt(message)
+
+	else :
+		messagebox.showerror("Invalid Conversion!")
+		return
+	    
+	language2_field.insert('end -1 chars', rslt)
+	
+		
+def encrypt(message):
+	cipher = ''
+	for letter in message:
+		if letter != ' ':
+			cipher += MORSE_CODE_DICT[letter] + ' '
+		else:
+			cipher += ' '
+
+	return cipher
+
+def decrypt(message):
+	message += ' '
+	decipher = ''
+	citext = ''
+	for letter in message:
+
+		if (letter != ' '):
+			i = 0
+			citext += letter
+		else:
+			i += 1
+			if i == 2 :
+
+				decipher += ' '
+			else:
+				decipher += list(MORSE_CODE_DICT.keys())[
+							list(MORSE_CODE_DICT .values()).index(citext)]
+				citext = ''
+	return decipher
+
+if __name__ == "__main__" :
+	
+	main.configure(background = 'teal')
+	
+	main.geometry("850x400")
+
+	main.title("Morse Code Translator")
+
+	headlabel = Label(main, text = '   MORSE CODE TRANSLATOR   ',
+							fg = 'black', bg = "#e6e6e6" , borderwidth= 2 , relief = "raised", font = "Times_New_Roman")
+
+	label1 = Label(main, text = "      INITIAL  MESSAGE      ",
+				fg = 'black', bg = '#e6e6e6' , borderwidth= 2 , relief = "raised", font = "Times_New_Roman")
+
+	label2 = Label(main, text = "    FROM     ",
+				fg = 'black', bg = '#e6e6e6' , borderwidth= 2 , relief = "raised", font = "Times_New_Roman")
+
+	label3 = Label(main, text = "       TO       ",
+				fg = 'black', bg = '#e6e6e6' , borderwidth= 2 , relief = "raised", font = "Times_New_Roman")
+
+	label4 = Label(main, text = "    CONVERTED  RESULT  ",
+				fg = 'black', bg = '#e6e6e6' , borderwidth= 2 , relief = "raised", font = "Times_New_Roman")
+
+	headlabel.grid(row = 0, column = 1, pady = 5)
+	label1.grid(row = 1, column = 0, pady = 5)
+	label2.grid(row = 2, column = 0, pady = 5)
+	label3.grid(row = 3, column = 0, pady = 5)
+	label4.grid(row = 5, column = 0, pady = 5)
+
+	language1_field = Text(main, height = 5, width = 25, bg = "#e6e6e6", borderwidth= 2 , relief = "raised",font = "lucida 13")								
+	language2_field = Text(main, height = 5, width = 25, bg = "#e6e6e6", borderwidth= 2 , relief = "raised",font = "lucida 13")
+									
+	language1_field.grid(row = 1, column = 2, padx = 25, pady = 5)
+	language2_field.grid(row = 5, column = 2, padx = 25, pady = 5)
+
+	Language = ["Message", "Morse Code"]
+
+	FromLanguage_option = OptionMenu(main, variable1, *Language)
+	ToLanguage_option = OptionMenu(main, variable2, *Language)
+	
+	FromLanguage_option.grid(row = 2, column = 1, padx = 50, pady = 5)
+	ToLanguage_option.grid(row = 3, column = 1, padx = 50, pady = 5)
+	
+	button1 = Button(main, text = "Convert", bg = "#e6e6e6", fg = "black", borderwidth= 2 , relief = "raised",command = convert)
+	button1.grid(row = 2, column = 2, padx = 50, pady = 5)
+
+	button2 = Button(main, text = "  Clear   ", bg = "#e6e6e6", borderwidth= 2 , relief = "raised",fg = "black", command = clearAll)
+	button2.grid(row = 6, column = 2, padx = 50, pady = 5)
+
+	main.mainloop()
+
+	
